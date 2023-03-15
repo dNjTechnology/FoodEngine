@@ -9,6 +9,9 @@ import static com.dnj.fooding.App.loadFXML;
 import static com.dnj.fooding.App.scene;
 import static com.dnj.fooding.App.stage;
 import com.dnj.fooding.service.ServiceManService;
+import com.dnj.fooding.support.AESEncryption;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -62,15 +66,24 @@ public class ServiceManController implements Initializable{
     public void initialize(URL url, ResourceBundle rb) {
         manageAccessButton();
         staticUserNameDiaplay=userNameDisplay;
-        Pane pane=App.loadFXMLPanel("homeService");
-        mainpane.setCenter(pane);
+        Object object=App.loadFXMLPanel("homeService");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
         userNameDisplay.setText(App.currentUser.getName());
+        App.isLoggedin=true;
         // userNameDisplay= new MenuButton("menuButton");
  
         // create menuitems
         MenuItem m1 = new MenuItem("Role:-"+App.currentUser.getDesignation());
         MenuItem m2 = new MenuItem("My Access");
         MenuItem m3 = new MenuItem("My Account");
+        MenuItem m4 = new MenuItem("Create USB Key");
  m2.setOnAction(new EventHandler<ActionEvent>() {
     @Override
     public void handle(ActionEvent event) {
@@ -85,33 +98,119 @@ public class ServiceManController implements Initializable{
  m3.setOnAction(new EventHandler<ActionEvent>() {
     @Override
     public void handle(ActionEvent event) {
-       Pane pane=App.loadFXMLPanel("myAccount");
-        mainpane.setCenter(pane);
+      
+        Object object=App.loadFXMLPanel("myAccount");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
+    }
+});
+ m4.setOnAction(new EventHandler<ActionEvent>() {
+    @Override
+    public void handle(ActionEvent event) {
+        String[] DRIVE_LETTERS = {"D", "E", "F", "G"};
+    String INI_FILE_NAME = "restro365key.ini";
+    boolean found=false;
+       for (String driveLetter : DRIVE_LETTERS) {
+            File drive = new File(driveLetter + ":/");
+            if (drive.exists() && drive.canRead()) {
+                found=true;
+                System.out.println("USB drive detected: " + driveLetter);
+                File iniFile = new File(drive, INI_FILE_NAME);
+                try {
+                    FileWriter writer = new FileWriter(iniFile);
+                    String admin=AESEncryption.encrypt(App.currentUser.getUserid());
+                    String password=AESEncryption.encrypt(App.currentUser.getPassword());
+                    writer.write("[restronusbpasskey]\n");
+                    writer.write("userid="+admin+"\n");
+                    writer.write("passkey="+password+"\n");
+                    writer.close();
+                    Alert a=new Alert(Alert.AlertType.INFORMATION);
+                    a.setContentText("Passkey Created, USB can be used for Login.");
+                    a.setTitle("Security");
+                    a.setHeaderText("USB Passkey Creation");
+                    a.show();
+                    break;
+                    //System.out.println("INI file created: " + iniFile.getAbsolutePath());
+                } catch (IOException e) {
+                    Alert a=new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("Passkey creation failed");
+                    a.setTitle("Security");
+                    a.setHeaderText("Passkey Error");
+                    a.show();
+                }
+            }
+        }
+       if(!found){
+           Alert a=new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("No USB Found on any PORT.");
+                    a.setTitle("Security");
+                    a.setHeaderText("Passkey Error");
+                    a.show();
+       }
     }
 });
         // add menu items to menu
         userNameDisplay.getItems().add(m1);
         userNameDisplay.getItems().add(m2);
         userNameDisplay.getItems().add(m3);
+        userNameDisplay.getItems().add(m4);
         
         //userNameDisplay.set
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     public void order(){
-        Pane pane=App.loadFXMLPanel("order");
-        mainpane.setCenter(pane);
+       
+        Object object=App.loadFXMLPanel("order");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
     }
     public void liveRestro(){
-        Pane pane=App.loadFXMLPanel("liveRestro");
-        mainpane.setCenter(pane);
+        
+         Object object=App.loadFXMLPanel("liveRestro");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
     }
     public void manageRestro(){
-        Pane pane=App.loadFXMLPanel("mangeRestro");
-        mainpane.setCenter(pane);
+        
+         Object object=App.loadFXMLPanel("mangeRestro");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
     }
     public void home(){
-        Pane pane=App.loadFXMLPanel("homeService");
-        mainpane.setCenter(pane);
+        
+         Object object=App.loadFXMLPanel("homeService");
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);  
+        }
     }
     public void exitApp(){
         Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
@@ -140,8 +239,18 @@ public class ServiceManController implements Initializable{
            btn1.setOnAction(new EventHandler<ActionEvent>() {
     @Override
     public void handle(ActionEvent event) {
-       Pane pane=App.loadFXMLPanel(btnLable.getValue());
-        mainpane.setCenter(pane);
+        Object object=App.loadFXMLPanel(btnLable.getValue());
+        if(object instanceof Pane){
+       Pane pane=(Pane)object;
+       mainpane.setCenter(pane);
+      
+               }
+        else if(object instanceof ScrollPane){
+            ScrollPane pane=(ScrollPane)object;
+          mainpane.setCenter(pane);
+          
+        }
+        
     }
 });
        }
@@ -182,7 +291,7 @@ public class ServiceManController implements Initializable{
         Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Do you really want to log out ?");
         Optional<ButtonType> result = alert.showAndWait();
-        alert.show();
+        
         
 	if(!result.isPresent() || result.get() != ButtonType.OK) {
             
@@ -194,6 +303,7 @@ public class ServiceManController implements Initializable{
                 App.currentUser=null;
             try {
                 App.scene= new Scene(App.loadFXML("logindialog"), 640, 480);
+                App.currentUser=null;
             }
             catch (IOException ex) {
                 Logger.getLogger(ServiceManController.class.getName()).log(Level.SEVERE, null, ex);

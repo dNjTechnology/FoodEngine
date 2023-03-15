@@ -12,10 +12,10 @@ import com.dnj.fooding.exeptions.UserPasswordFieldException;
  */
 public class PasswordValidation {
     public static void validateInput(String userid,String password) throws UserPasswordFieldException{
-        if(userid.isBlank()||userid.isEmpty()||userid.contains(" ")){
+        if(userid==null||userid.isBlank()||userid.isEmpty()||userid.contains(" ")){
             throw new UserPasswordFieldException("USER_ID_FIEL_EMPTY");
         }
-        if(password.isBlank()||password.isEmpty()){
+        if(password==null||password.isBlank()||password.isEmpty()){
             throw new UserPasswordFieldException("PASSWORD_FIEL_EMPTY");
         }
     }

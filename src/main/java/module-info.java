@@ -3,11 +3,16 @@ module com.dnj.fooding {
     requires javafx.fxml;
     requires java.base;
     requires java.sql;
+    requires javolution;
+    requires org.hibernate.orm.core;
+    requires java.persistence;
+    requires java.naming;
+    requires pusher.http.java;
+    requires pusher.java.client;
    
-    
-    
+    //opens com.dnj.fooding.model to org.hibernate.orm.core;
     opens com.dnj.fooding to javafx.fxml;
-    opens com.dnj.fooding.model to javafx.fxml;
+    opens com.dnj.fooding.model to javafx.fxml,org.hibernate.orm.core;
     opens com.dnj.fooding.controller to javafx.fxml;
     opens com.dnj.fooding.dao to javafx.fxml;
     opens com.dnj.fooding.service to javafx.fxml;

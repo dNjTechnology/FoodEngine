@@ -7,17 +7,41 @@ package com.dnj.fooding.model;
 import java.util.Arrays;
 
 import java.util.List;
+import java.util.Set;
+import javax.persistence.*;
+
+
+
 
 /**
  *
  * @author Animesh Samanta
  */
+@Entity
+@Table(name ="user")
 public class User {
+   @Column(name = "name") 
 private String name;
+@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+private String id;
+
+    
+@Column(name = "userid")
    private String userid;
+@Column(name = "password")
    private String password;
+@Column(name = "designation")
    private String designation;
-   private List<String> access;
+@Column(name = "Network")
+   private String access;
+@Column(name = "isLocked")
+private Integer isLocked;
+   //public Boolean isLoggedIn;
+ public User() {
+        // default constructor
+    }
     public String getName() {
         return name;
     }
@@ -51,12 +75,32 @@ private String name;
     }
 
     public List<String> getAccess() {
-        return access;
+        String arr[]=this.access.split(",");
+        
+        return Arrays.asList(arr);
     }
 
     public void setAccess(String access) {
-        String arr[]=access.split(",");
-        this.access = Arrays.asList(arr);
+        this.access=access;
+    }
+      public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Integer getIsLocked() {
+        return isLocked;
+    }
+
+    public void setIsLocked(Integer isLocked) {
+        this.isLocked = isLocked;
+    }
+    @Override
+    public String toString() {
+        return "User{" + "name=" + name + ", id=" + id + ", userid=" + userid + ", password=" + password + ", designation=" + designation + ", access=" + access + ", isLocked=" + isLocked + '}';
     }
    
 }

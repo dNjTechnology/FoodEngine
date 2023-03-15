@@ -66,6 +66,16 @@ public class ServiceManService {
            buttons.add("Point of Sale(POS)");
            accessToXMLMAP.put("Point of Sale(POS)", "");
        }
+              else if(access.equals("MANAGE_KITCHEN")){
+                 buttons.add("Manage Kitchen");
+           accessToXMLMAP.put("Manage Kitchen", ""); 
+             }
+             else if(access.equals("MANAGE_TABLE")){
+                 buttons.add("Manage Table");
+           accessToXMLMAP.put("View Dine In", "tableDineIn"); 
+             }
+            
+             
         }
         return accessToXMLMAP;
     }

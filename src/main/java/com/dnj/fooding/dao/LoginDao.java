@@ -4,13 +4,20 @@
  */
 package com.dnj.fooding.dao;
 
+import com.dnj.fooding.App;
+import com.dnj.fooding.exeptions.AuthenticationException;
 import com.dnj.fooding.exeptions.UserNotFoundException;
 import com.dnj.fooding.model.User;
+import com.dnj.fooding.support.AskPassword;
 import com.dnj.fooding.support.DataBaseConnection;
+import com.dnj.fooding.support.HibernateUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -30,25 +37,28 @@ public class LoginDao {
         }
         return loginDaoInstance;
     }
+     @SuppressWarnings("static-access")
     public User getUserById(String userid) throws SQLException, UserNotFoundException{
         User currentUser=null;
-        Connection connection=DataBaseConnection.CONNECT();
-        PreparedStatement stmt=connection.prepareStatement("select * from user where userid=?");
-                stmt.setString(1,userid);  
-                ResultSet result = stmt.executeQuery();
-                 if (!result.next()) {
-                     throw new UserNotFoundException();
-                 }
-                 else{
-                     currentUser=new User();
-        currentUser.setAccess(result.getString("Network"));
-        currentUser.setDesignation(result.getString("designation"));
-        currentUser.setName(result.getString("name"));
-        currentUser.setUserid(result.getString("userid"));
-        currentUser.setPassword(result.getString("password"));
-        
-                 }
+        Session session = HibernateUtil.getSessionFactory().openSession();
+                 Transaction transaction = session.beginTransaction();
+                String hql = "FROM User WHERE userid = :userid";
+                Query query = session.createQuery(hql);
+query.setParameter("userid", userid);
+                currentUser=(User)query.uniqueResult();
+                Testing.get();
                 return currentUser;
+    }
+    public void resetPassword(String password) throws AuthenticationException{
+   AskPassword.askPassword();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        User user=App.currentUser;
+        user.setPassword(password);
+        session.saveOrUpdate(user);
+        transaction.commit();
+       
+        App.currentUser.setPassword(password);
     }
     
 }

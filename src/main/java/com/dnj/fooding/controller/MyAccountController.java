@@ -5,9 +5,14 @@
 package com.dnj.fooding.controller;
 
 import com.dnj.fooding.App;
+import com.dnj.fooding.dao.LoginDao;
 import com.dnj.fooding.exeptions.AuthenticationException;
 import com.dnj.fooding.service.MyAccountService;
+import com.dnj.fooding.support.AESEncryption;
 import com.dnj.fooding.support.DataBaseConnection;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,12 +58,7 @@ private TextField confirmPassword;
     public void resetPassword(){
     try {
         if(newPassword.getText().equals(confirmPassword.getText())){
-        Connection connection=DataBaseConnection.CONNECT();
-       
-        PreparedStatement stmt=connection.prepareStatement("UPDATE user SET password=? WHERE userid=?");
-        stmt.setString(1,newPassword.getText());
-        stmt.setString(2,App.currentUser.getUserid());
-        stmt.executeUpdate();
+            LoginDao.getInstance().resetPassword(newPassword.getText());
          Alert a=new Alert(Alert.AlertType.INFORMATION, "Info", ButtonType.OK);
         a.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         a.setContentText("Password changed Successfully.");
@@ -66,6 +66,52 @@ private TextField confirmPassword;
         a.setHeight(100);
         a.show();
         App.currentUser.setPassword(newPassword.getText());
+        newPassword.setText("");
+        confirmPassword.setText("");
+        if(App.logInBy.equals("USB_KEY")){
+            a.close();
+            String[] DRIVE_LETTERS = {"D", "E", "F", "G"};
+    String INI_FILE_NAME = "restro365key.ini";
+    boolean found=false;
+       for (String driveLetter : DRIVE_LETTERS) {
+            File drive = new File(driveLetter + ":/");
+            if (drive.exists() && drive.canRead()) {
+                found=true;
+                System.out.println("USB drive detected: " + driveLetter);
+                File iniFile = new File(drive, INI_FILE_NAME);
+                try {
+                    FileWriter writer = new FileWriter(iniFile);
+                    String admin=AESEncryption.encrypt(App.currentUser.getUserid());
+                    String password=AESEncryption.encrypt(App.currentUser.getPassword());
+                    writer.write("[restronusbpasskey]\n");
+                    writer.write("userid="+admin+"\n");
+                    writer.write("passkey="+password+"\n");
+                    writer.close();
+                    Alert a3=new Alert(Alert.AlertType.INFORMATION);
+                    a3.setContentText("Passkey also Created, USB can be used for Login.");
+                    a3.setTitle("Security");
+                    a3.setHeaderText("USB Passkey Creation");
+                    a3.show();
+                    break;
+                    //System.out.println("INI file created: " + iniFile.getAbsolutePath());
+                } catch (IOException e) {
+                    Alert a2=new Alert(Alert.AlertType.ERROR);
+                    a2.setContentText("Passkey creation failed");
+                    a2.setTitle("Security");
+                    a2.setHeaderText("Passkey Error");
+                    a2.show();
+                }
+            }
+        }
+       if(!found){
+           Alert a1=new Alert(Alert.AlertType.ERROR);
+                    a1.setContentText("No USB Found on any PORT.");
+                    a1.setTitle("Security");
+                    a1.setHeaderText("Passkey Error");
+                    a1.show();
+       }
+        }
+        
         }
         else{
             Alert a=new Alert(Alert.AlertType.ERROR, "Error", ButtonType.OK);
@@ -77,9 +123,16 @@ private TextField confirmPassword;
         }
         
     }
-    catch (SQLException ex) {
+    catch (AuthenticationException ex) {
+        Alert a=new Alert(Alert.AlertType.ERROR, "Error", ButtonType.OK);
+        a.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        a.setContentText("Wrong Password Entered.");
+        a.setWidth(300);
+        a.setHeight(100);
+        a.show();
         Logger.getLogger(MyAccountController.class.getName()).log(Level.SEVERE, null, ex);
     }
+    
     }
 @SuppressWarnings("static-access")
     public void updateName(){

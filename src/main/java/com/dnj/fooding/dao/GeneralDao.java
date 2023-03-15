@@ -6,11 +6,15 @@ package com.dnj.fooding.dao;
 
 import com.dnj.fooding.App;
 import com.dnj.fooding.exeptions.AuthenticationException;
+import com.dnj.fooding.model.User;
 import com.dnj.fooding.support.AskPassword;
 import com.dnj.fooding.support.DataBaseConnection;
+import com.dnj.fooding.support.HibernateUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -31,13 +35,13 @@ public class GeneralDao {
        public void updateName(String currentName) throws AuthenticationException, SQLException, Exception{
         if(!(currentName.equals(App.currentUser.getName()))){
         AskPassword.askPassword();
-        
-        Connection connection=DataBaseConnection.CONNECT();
-        
-        PreparedStatement stmt=connection.prepareStatement("UPDATE user SET name=? WHERE userid=?");
-        stmt.setString(1,currentName);
-        stmt.setString(2,App.currentUser.getUserid());
-        stmt.executeUpdate();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        User user=App.currentUser;
+        user.setName(currentName);
+        session.saveOrUpdate(user);
+        transaction.commit();
+       
         App.currentUser.setName(currentName);
         }
         else{
