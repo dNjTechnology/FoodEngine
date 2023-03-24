@@ -6,6 +6,7 @@ package com.dnj.fooding.service;
 
 import com.dnj.fooding.dao.TablesDineInDao;
 import com.dnj.fooding.model.CurrentTableBooking;
+import com.dnj.fooding.model.Order;
 import com.dnj.fooding.model.TablesDineIn;
 import java.util.List;
 
@@ -29,7 +30,13 @@ public class TableDineInService {
         return tables;
     }
     public CurrentTableBooking getTableWorkFlow(TablesDineIn table){
-        CurrentTableBooking booking=TablesDineInDao.getInstance().getCurrentTableWorkFlow(table.getTableNumber());
+        CurrentTableBooking booking=TablesDineInDao.getInstance().getCurrentTableWorkFlow(table);
         return booking;
+    }
+    public List<Order> getOrderFor(TablesDineIn table){
+        List<Order> orders=null;
+        CurrentTableBooking currentBooking=TablesDineInDao.getInstance().getCurrentTableBookingForTable(table);
+        //currentBooking.get(0).getOrders()
+        return currentBooking.getOrders();
     }
 }

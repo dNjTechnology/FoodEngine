@@ -51,8 +51,8 @@ public class ServiceManService {
            accessToXMLMAP.put("Manage Sales", "");
        }
        else if(access.equals("MANAGE_ATTENDANCE")){
-           buttons.add("M.Attendance");
-           accessToXMLMAP.put("M.Attendance", "");
+           buttons.add("M.Staff");
+           accessToXMLMAP.put("M.Staff", "staffManagement");
        }
        else if(access.equals("MANAGE_ROLE")){
            buttons.add("Manage Role");
@@ -68,7 +68,7 @@ public class ServiceManService {
        }
               else if(access.equals("MANAGE_KITCHEN")){
                  buttons.add("Manage Kitchen");
-           accessToXMLMAP.put("Manage Kitchen", ""); 
+           accessToXMLMAP.put("Manage Kitchen", "mangeKitchen"); 
              }
              else if(access.equals("MANAGE_TABLE")){
                  buttons.add("Manage Table");

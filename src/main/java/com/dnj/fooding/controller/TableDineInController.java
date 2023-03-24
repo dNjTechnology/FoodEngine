@@ -57,6 +57,7 @@ private GridPane gripPaneForTableView;
     public static List<TablesDineIn> tables;
     public static List<TablesDineIn> newTableList;
     public static Map<Integer,VBox> tabletoVboxMap=new HashMap<>();
+    public static Stage stage;
     /**
      * Initializes the controller class.
      */
@@ -71,15 +72,13 @@ private GridPane gripPaneForTableView;
         System.out.println(gripPaneForTableViewstatic.toString());
         tables=TableDineInService.getInstance().getAllTables();
         createView();
-        if(!App.isTableInspectOn){
-            App.isTableInspectOn=true;
-        Thread t2 = new Thread(new RealTimeSystem());
-        t2.start();
-        }
+        
+            
+        
     }
 public void createView() {
     double noOfCellRequired = (double) tables.size();
-    int numberOfRows = (int) Math.ceil(noOfCellRequired / 6.0);
+    int numberOfRows = (int) Math.ceil(noOfCellRequired / 7.0);
     int numberOfColumns = (int) Math.ceil(noOfCellRequired / numberOfRows);
 
     for (int i = 0; i < numberOfRows; i++) {
@@ -112,10 +111,16 @@ public void createView() {
                      image = new Image("file:///C:/freetable.jpg");
                      Button reserve = new Button("Reserve table "+tables.get(index).getTableNumber());
 reserve.setOnAction(event ->{ 
+    if(ReserveTableController.stage!=null){
+         Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Already Table Reservation on go.");
+        return;
+    }
    Stage stage=new Stage();
+   App.setIconForStage(stage);
    ReserveTableController.currentSelection=tables.get(index);
    ReserveTableController.clickedButton=reserve;
-   App.subActiveStage=stage;
+   ReserveTableController.stage=stage;
                          try {
                              scene = new Scene(App.loadFXML("reserveTable"), 640, 480);
                          }
@@ -133,21 +138,28 @@ reserve.setOnAction(event ->{
                 else{
                     Button viewOrderForTable = new Button("View/Order table "+tables.get(index).getTableNumber());
 viewOrderForTable.setOnAction(event->{
+    if(ViewTableOrderController.stage!=null){
+         Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Already Table Order on go.");
+        return;
+    }
      TablesDineIn tempTable=new TablesDineIn();
         tempTable.setTableNumber(tables.get(index).getTableNumber());
         tempTable.setAvailable(true);
         tempTable.setSeatingCapacity(tables.get(index).getSeatingCapacity());
     CurrentTableBooking booking=TableDineInService.getInstance().getTableWorkFlow(tempTable);
         ViewTableOrderController.servingCustomer=booking.getCustomer();
-        ViewTableOrderController.ordersList=booking.getOrders();
+       // ViewTableOrderController.ordersList=booking.getOrders();
         ViewTableOrderController.table=booking.getTable();
         if( ViewTableOrderController.servingCustomer!=null && !ViewTableOrderController.servingCustomer.getName().isBlank()){
             Stage stage=new Stage();
-            App.subActiveStage=stage;
+               App.setIconForStage(stage);
+            ViewTableOrderController.stage=stage;
              try {
                              scene = new Scene(App.loadFXML("viewTableOrder"), 640, 480);
                          }
                          catch (IOException ex) {
+                             ex.printStackTrace();
                              Logger.getLogger(TableDineInController.class.getName()).log(Level.SEVERE, null, ex);
                          }
         stage.setScene(scene);
@@ -194,11 +206,16 @@ public static void updateView(Map<Integer,Boolean> map,List<TablesDineIn> tables
                 {
                      image = new Image("file:///C:/freetable.jpg");
                      Button reserve = new Button("Reserve table "+changeMap.getKey());
-reserve.setOnAction(event ->{ 
+reserve.setOnAction(event ->{
+    if(ReserveTableController.stage!=null){
+         Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Already Table Reservation on go.");
+        return;
+    }
    Stage stage=new Stage();
-  
+    App.setIconForStage(stage);
    ReserveTableController.currentSelection=result.get();
-   App.subActiveStage=stage;
+   ReserveTableController.stage=stage;
                          try {
                              scene = new Scene(App.loadFXML("reserveTable"), 640, 480);
                          }
@@ -216,6 +233,12 @@ reserve.setOnAction(event ->{
                 else{
                          Button viewOrderForTable = new Button("View/Order table "+changeMap.getKey());
 viewOrderForTable.setOnAction(event->{
+    
+    if(ViewTableOrderController.stage!=null){
+         Alert alert=new Alert(Alert.AlertType.ERROR);
+             alert.setContentText("Already Table Order on go.");
+        return;
+    }
      TablesDineIn tempTable=new TablesDineIn();
         tempTable.setTableNumber(changeMap.getKey());
         tempTable.setAvailable(false);
@@ -226,7 +249,8 @@ viewOrderForTable.setOnAction(event->{
         ViewTableOrderController.table=booking.getTable();
         if( ViewTableOrderController.servingCustomer!=null && !ViewTableOrderController.servingCustomer.getName().isBlank()){
             Stage stage=new Stage();
-            App.subActiveStage=stage;
+               App.setIconForStage(stage);
+            ViewTableOrderController.stage=stage;
              try {
                              scene = new Scene(App.loadFXML("viewTableOrder"), 640, 480);
                          }

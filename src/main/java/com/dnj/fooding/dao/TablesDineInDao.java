@@ -54,6 +54,7 @@ public class TablesDineInDao {
         order.setCustomer(customer);
         order.setTablesDineIn(table);
         order.setMenu(menu);
+        order.setStatus("In Kitchen");
         order.setQuantity(1);
         LocalDateTime rightNow = LocalDateTime.now();
         order.setDate(rightNow);
@@ -65,9 +66,9 @@ public class TablesDineInDao {
         booking.setOrders(orders);
         booking.setTable(table);
         session.save(booking);
-        order.setCurrentTableBooking(booking);
+        order.setCurrentTableOrder(booking);
         TablesDineIn tempTable=new TablesDineIn();
-        session.update(order);
+        //session.update(order);
         tempTable.setTableNumber(table.getTableNumber());
         tempTable.setAvailable(false);
         tempTable.setSeatingCapacity(table.getSeatingCapacity());
@@ -91,14 +92,25 @@ a.show();
     Query query = session.createQuery("FROM Menu WHERE itemName = :itemName");
     query.setParameter("itemName","COMPLIMENTARY");
     List<Menu> menuList = query.list();
-    session.close();
+    //session.close();
     return menuList.get(0);
     }
-    public CurrentTableBooking getCurrentTableWorkFlow(Integer tableNumber){
+    public CurrentTableBooking getCurrentTableWorkFlow(TablesDineIn tableNumber){
       Session session = HibernateUtil.getSessionFactory().openSession();
     Query query = session.createQuery("FROM CurrentTableBooking WHERE table_number = :table");
     query.setParameter("table",tableNumber);
     List<CurrentTableBooking> list = query.list();
+    //session.close();
     return list.get(0);
+    }
+
+    public CurrentTableBooking getCurrentTableBookingForTable(TablesDineIn table) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+    Query query = session.createQuery("FROM CurrentTableBooking WHERE table = :table");
+    query.setParameter("table",table);
+    List<CurrentTableBooking> list = query.list();
+    
+   
+    return  list.get(0);
     }
 }

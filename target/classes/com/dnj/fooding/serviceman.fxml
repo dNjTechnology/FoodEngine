@@ -50,7 +50,7 @@
             </Label>
             <ImageView fitHeight="53.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                <image>
-                  <Image url="@../../../../../../../../../../../../restrologo.jpg" />
+                  <Image url="@images/restrologo.jpg" />
                </image>
             </ImageView>
          </children>
@@ -61,7 +61,7 @@
          <children>
             <ImageView fitHeight="12.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../../../../../../djlogo.png" />
+                  <Image url="@images/djlogo.png" />
                </image>
             </ImageView>
          </children>

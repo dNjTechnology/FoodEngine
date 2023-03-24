@@ -7,6 +7,7 @@ package com.dnj.fooding.controller;
 import com.dnj.fooding.App;
 import static com.dnj.fooding.App.loadFXML;
 import static com.dnj.fooding.App.scene;
+import static com.dnj.fooding.App.setIconForStage;
 import static com.dnj.fooding.App.stage;
 import com.dnj.fooding.service.ServiceManService;
 import com.dnj.fooding.support.AESEncryption;
@@ -24,6 +25,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -223,6 +225,7 @@ public class ServiceManController implements Initializable{
 		return;
 	} else {
             alert.close();
+            App.closeApplicationCompletly();
 		App.getStage().close();
 	}
        return;
@@ -240,7 +243,19 @@ public class ServiceManController implements Initializable{
     @Override
     public void handle(ActionEvent event) {
         Object object=App.loadFXMLPanel(btnLable.getValue());
-        if(object instanceof Pane){
+        if(object instanceof BorderPane){
+            Stage stage=new Stage();
+            BorderPane p=(BorderPane) object;
+        setIconForStage(stage);
+        scene = new Scene(p, 640, 480);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        //stage.setFullScreen(true);
+        //stage.initStyle(StageStyle.UNDECORATED);
+        stage.setMaximized(true);
+        stage.show();
+        }
+        else if(object instanceof Pane){
        Pane pane=(Pane)object;
        mainpane.setCenter(pane);
       
@@ -250,6 +265,7 @@ public class ServiceManController implements Initializable{
           mainpane.setCenter(pane);
           
         }
+        
         
     }
 });
@@ -275,7 +291,29 @@ public class ServiceManController implements Initializable{
     exitBtn.setPrefHeight(100);
     exitBtn.minWidth(100);
     exitBtn.minHeight(30);
-    
+    exitBtn.setOnAction(new EventHandler<ActionEvent>() {
+    @Override
+    public void handle(ActionEvent event) {
+        Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Do you really want to exit?");
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        
+	if(!result.isPresent() || result.get() != ButtonType.OK) {
+            
+		
+	} else {
+            alert.close();
+		App.getStage().close();
+               
+                
+                App.currentUser=null;
+                App.closeApplicationCompletly();
+           
+	}
+       
+    }
+});
     Button logOut = new Button();
     logOut.setStyle("-fx-background-color:#b1c1ec;");
     logOut.setText("Log Out");
@@ -300,10 +338,12 @@ public class ServiceManController implements Initializable{
             alert.close();
 		App.getStage().close();
                 App.stage=new Stage();
+               App.setIconForStage(App.stage);
                 App.currentUser=null;
             try {
                 App.scene= new Scene(App.loadFXML("logindialog"), 640, 480);
                 App.currentUser=null;
+                
             }
             catch (IOException ex) {
                 Logger.getLogger(ServiceManController.class.getName()).log(Level.SEVERE, null, ex);

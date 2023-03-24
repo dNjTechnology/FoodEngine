@@ -26,13 +26,30 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private int orderId;
-    
+    @Column(name = "status")
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;
     @ManyToOne
     @JoinColumn(name = "id", referencedColumnName = "id")
-    private CurrentTableBooking currentTableBooking;
+    private CurrentTableBooking currentTableOrder;
+
+    public CurrentTableBooking getCurrentTableOrder() {
+        return currentTableOrder;
+    }
+
+    public void setCurrentTableOrder(CurrentTableBooking currentTableOrder) {
+        this.currentTableOrder = currentTableOrder;
+    }
 
     public int getOrderId() {
         return orderId;
@@ -42,17 +59,21 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public CurrentTableBooking getCurrentTableBooking() {
-        return currentTableBooking;
-    }
-
-    public void setCurrentTableBooking(CurrentTableBooking currentTableBooking) {
-        this.currentTableBooking = currentTableBooking;
-    }
+   
     @OneToOne
     @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
     private Menu menu;
-    
+    @ManyToOne
+    @JoinColumn(name = "billing_id", referencedColumnName = "billing_id")
+    private Billing billing;
+
+    public Billing getBilling() {
+        return billing;
+    }
+
+    public void setBilling(Billing billing) {
+        this.billing = billing;
+    }
     @ManyToOne
     @JoinColumn(name = "table_number", referencedColumnName = "table_number")
     private TablesDineIn tablesDineIn;
@@ -121,5 +142,33 @@ public class Order {
      public Order() {
         // default constructor
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + this.orderId;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        return this.orderId == other.orderId;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" + "orderId=" + orderId + ", status=" + status + '}';
+    }
+     
 }
 

@@ -35,6 +35,9 @@ public class CustomerService {
             if(c==null){
                 return CustomerDao.getInstance().addCustomer(customer);
             }
+            else if((c.getEmail().isBlank()||c.getEmail().isEmpty())&&!(customer.getEmail().isBlank()||customer.getEmail().isEmpty())){
+                c=CustomerDao.getInstance().updateCustomer(c);
+            }
             return c;
         
     }
@@ -46,4 +49,10 @@ public class CustomerService {
            return null;
             
         }
+
+    public Customer updateCustomer(Customer customer) {
+        return CustomerDao.getInstance().updateCustomer(customer);
+        }
+
+   
 }

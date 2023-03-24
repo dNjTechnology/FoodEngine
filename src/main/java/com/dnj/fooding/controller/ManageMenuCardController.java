@@ -79,6 +79,7 @@ public class ManageMenuCardController implements Initializable {
                         btn.setOnAction((ActionEvent event) -> {
                             MenuDish data = getTableView().getItems().get(getIndex());
                             Stage stage=new Stage();
+                            App.setIconForStage(stage);
                            Scene scene;
                             try {
                                 scene = new Scene(App.loadFXML("editMenuForm"), 640, 480);

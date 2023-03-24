@@ -4,7 +4,7 @@
   "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-     <property name="show_sql">true</property>
+     
 <property name="hibernate.hbm2ddl.auto">validate</property>
 <property name="hibernate.hbm2ddl.auto">update</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
@@ -22,9 +22,10 @@
        <mapping class="com.dnj.fooding.model.Customer"/>
     <mapping class="com.dnj.fooding.model.VisitingHistory"/>
     <mapping class="com.dnj.fooding.model.Order"/>
-    
+     <mapping class="com.dnj.fooding.model.Billing"/>
     <mapping class="com.dnj.fooding.model.Menu"/>
      <mapping class="com.dnj.fooding.model.TablesDineIn"/>
      <mapping class="com.dnj.fooding.model.CurrentTableBooking"/>
+     <mapping class="com.dnj.fooding.model.Preference"/>
   </session-factory>
 </hibernate-configuration>

@@ -96,4 +96,26 @@ return customerList;
          }
          return null;
      }
+
+    public Customer updateCustomer(Customer customer) {
+       Session session = HibernateUtil.getSessionFactory().openSession();
+       Transaction trans=null;
+         try{
+             trans=session.beginTransaction();
+             session.update(customer);
+            // Customer savedCustomer=(Customer)session.get(Customer.class, customer.getId());
+             trans.commit();
+             return customer;
+         }
+         catch(Exception e){
+             e.printStackTrace();
+             trans.rollback();
+             
+         }
+         finally{
+             session.close();
+         }
+         return null;
+       
+    }
 }

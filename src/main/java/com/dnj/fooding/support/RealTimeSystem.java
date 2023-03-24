@@ -49,6 +49,8 @@ public class RealTimeSystem implements Runnable {
         }
       private static Map<Integer, Boolean> detectDifference(List<TablesDineIn> tables){
           Map<Integer,Boolean> map=new HashMap<>();
+          try{
+          
           List<TablesDineIn> oldTable=TableDineInController.tables;
           for(int i=0;i<oldTable.size();i++){
               if(tables.get(i).getTableNumber()==oldTable.get(i).getTableNumber()){
@@ -57,7 +59,12 @@ public class RealTimeSystem implements Runnable {
                   }
               }
           }
-          return map;
+         
+          }
+          catch(Exception e){
+              
+          }
+           return map;
       }  
     
 

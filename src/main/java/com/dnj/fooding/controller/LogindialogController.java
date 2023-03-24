@@ -14,6 +14,8 @@ import com.dnj.fooding.exeptions.UserNotFoundException;
 import com.dnj.fooding.exeptions.UserPasswordFieldException;
 import com.dnj.fooding.model.User;
 import com.dnj.fooding.service.LoginService;
+import com.dnj.fooding.support.RealTimeSystem;
+import com.dnj.fooding.support.RunningThreadManager;
 import com.dnj.fooding.support.UsbDetection;
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +34,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -43,7 +47,10 @@ import javafx.stage.StageStyle;
 public class LogindialogController implements Initializable {
 
     public static void logOutUsbMode() {
+        RunningThreadManager.closeAllThreads();
         App.getStage().close();
+        
+                
                 App.stage=new Stage();
                 App.currentUser=null;
             try {
@@ -70,10 +77,14 @@ public class LogindialogController implements Initializable {
     public static PasswordField passwordforloginstatic;
     @FXML
     private Label messagelogin;
+    @FXML
+    private VBox progressVBox;
     private static Label messageloginstatic;
     public static Boolean usbLogin=false;
     @FXML
     private void login() throws IOException {
+      
+        messagelogin.setText("");
         
         authentication();
         System.out.println("Login button clicked"+useridforlogin.getText()+"and"+passwordforlogin.getText());
@@ -86,10 +97,11 @@ public class LogindialogController implements Initializable {
     }
     
     private void authentication(){
-        messagelogin.setText("");
+       
         LoginService loginService=LoginService.getInstance();
         try {
             loginService.authenticationService(useridforlogin.getText(), passwordforlogin.getText());
+            RunningThreadManager.runRequiredThreadForUser();
             App.setNewStage("serviceman");
             Logger.getLogger(LogindialogController.class.getName()).log(Level.INFO,"Authentication Successfull");
         
@@ -120,6 +132,9 @@ public class LogindialogController implements Initializable {
             Logger.getLogger(LogindialogController.class.getName()).log(Level.SEVERE,  ex.getMessage(), ex);
         
         }
+        finally{
+            progressVBox.setVisible(false);
+        }
     }
 
     @Override
@@ -127,6 +142,8 @@ public class LogindialogController implements Initializable {
 useridforloginstatic=useridforlogin;
 passwordforloginstatic=passwordforlogin;
 messageloginstatic=messagelogin;
+        setProgress(false, "");
+
     }
     public static void usbLogin(){
         
@@ -138,6 +155,7 @@ messageloginstatic=messagelogin;
             
             App.logInBy="USB_KEY";
             App.setNewStage("serviceman");
+            RunningThreadManager.runRequiredThreadForUser();
             Logger.getLogger(LogindialogController.class.getName()).log(Level.INFO,"Authentication Successfull");
         
         }
@@ -191,4 +209,13 @@ messageloginstatic=messagelogin;
             Logger.getLogger(LogindialogController.class.getName()).log(Level.SEVERE,  ex.getMessage(), ex);
         }
     }
+    private void setProgress(Boolean bool,String message){
+    Label progressLable=(Label)progressVBox.getChildren().get(1);
+        ProgressIndicator progress=(ProgressIndicator)progressVBox.getChildren().get(0);
+        progressLable.setText(message);
+      progress.setVisible(bool);
+        progressLable.setVisible(bool);
 }
+    
+}
+

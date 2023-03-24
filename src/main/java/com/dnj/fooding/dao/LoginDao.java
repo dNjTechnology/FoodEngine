@@ -46,7 +46,7 @@ public class LoginDao {
                 Query query = session.createQuery(hql);
 query.setParameter("userid", userid);
                 currentUser=(User)query.uniqueResult();
-                Testing.get();
+                //Testing.get();
                 return currentUser;
     }
     public void resetPassword(String password) throws AuthenticationException{

@@ -37,6 +37,9 @@ public class LoginService {
             PasswordValidation.validateInput(userid, password);
             LoginDao logindao=LoginDao.getInstance();
             User user=logindao.getUserById(userid);
+            if(user==null){
+                throw new UserNotFoundException();
+            }
             if(user.getPassword().equals(password)){
                 App.currentUser=user;
             }

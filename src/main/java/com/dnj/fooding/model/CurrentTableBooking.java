@@ -4,9 +4,11 @@
  */
 package com.dnj.fooding.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,9 +31,8 @@ public class CurrentTableBooking {
     @OneToOne
     @JoinColumn(name = "table_number")
     public TablesDineIn table;
-    @OneToMany(cascade =CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-    public List<Order> orders;
+    @OneToMany(mappedBy = "currentTableOrder", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "customer_id")
     public Customer customer;

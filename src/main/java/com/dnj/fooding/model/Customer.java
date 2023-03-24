@@ -39,12 +39,27 @@ public class Customer {
     
     @Column(name = "email")
     private String email;
+@Column(name = "gstin",nullable = true)
+private String gstin;
+@Column(name = "address",nullable = true)
+private String address;
 
+    public String getAddress() {
+        return address;
+    }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-    
+    public String getGstin() {    
+        return gstin;
+    }
 
     // Getter and Setter methods for all fields
+    public void setGstin(String gstin) {
+        this.gstin = gstin;
+    }
 
     public int getId() {
         return id;

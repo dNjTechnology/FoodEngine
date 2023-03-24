@@ -10,6 +10,7 @@ import com.dnj.fooding.model.Menu;
 import com.dnj.fooding.model.MenuDish;
 import com.dnj.fooding.model.Order;
 import com.dnj.fooding.model.TablesDineIn;
+import com.dnj.fooding.service.TableDineInService;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -17,11 +18,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -36,6 +40,7 @@ public class ViewTableOrderController implements Initializable {
     public static Customer servingCustomer;
     public static TablesDineIn table;
     public static List<Order> ordersList;
+    public static Stage stage;
     @FXML
      private TextField customerName;
      @FXML
@@ -61,10 +66,13 @@ public class ViewTableOrderController implements Initializable {
             customerEmail.setText("Not available");
         }
         customerEmail.setEditable(false);
+        updateOrderList();
         renderOrderTable(ordersList);
     }
     public void closeA(){
-        App.subActiveStage.close();
+        
+        ViewTableOrderController.stage.close();
+        ViewTableOrderController.stage=null;
     }
   
 public void renderOrderTable(List<Order> ordersList) {
@@ -82,12 +90,51 @@ public void renderOrderTable(List<Order> ordersList) {
 
     TableColumn<Order, Integer> quantityColumn = new TableColumn<>("Quantity");
     quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+    TableColumn<Order, Integer> statusColumn = new TableColumn<>("Status");
+    statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-   tabViewOrder.getColumns().setAll(idColumn, menuColumn, priceColumn, quantityColumn);
+   tabViewOrder.getColumns().setAll(idColumn, menuColumn, priceColumn, quantityColumn,statusColumn);
 
    
     
 }
-    
+@FXML
+private void addOrder(){
+    AddOrderController.isRoutFromNextSceen=false;
+    AddOrderController.stage=new Stage();
+      App.setIconForStage(AddOrderController.stage);
+                           Scene scene;
+                            try {
+                                scene = new Scene(App.loadFXML("addOrder"), 640, 480);
+                                AddOrderController.stage.setScene(scene);
+                                AddOrderController.stage.setResizable(false);
+        AddOrderController.stage.initStyle(StageStyle.UNDECORATED);
+        AddOrderController.stage.show();
+                            }
+                            catch(Exception e){
+                                e.printStackTrace();
+                            }
+}
+
+public static void updateOrderList(){
+    ordersList=TableDineInService.getInstance().getOrderFor(table);
+}
+@FXML
+public void openBillDesk(){
+    BillingController.table=table;
+    Scene scene;
+    Stage stage=new Stage();
+   App.setIconForStage(stage);
+                            try {
+                                scene = new Scene(App.loadFXML("billing"), 640, 480);
+                                stage.setScene(scene);
+                                stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+                            }
+                            catch(Exception e){
+                                e.printStackTrace();
+                            }
+}
     
 }
